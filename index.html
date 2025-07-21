@@ -40,7 +40,7 @@
             transition: all 0.2s ease-in-out;
             cursor: pointer;
             position: relative; /* Keep relative for potential future absolute positioning if needed */
-            min-height: 280px; /* Ensure consistent height for cards */
+            min-height: auto; /* Allow card height to adjust based on content */
         }
         .image-card:hover {
             border-color: #a7d9ff; /* Highlight on hover */
@@ -52,9 +52,9 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Blue ring when selected */
         }
         .image-card img {
-            width: 100%;
-            max-width: 500px; /* Doubled max-width for larger images */
-            height: auto;
+            width: 100%; /* Make image fill the width of its container */
+            height: 250px; /* Set a fixed height for visual consistency */
+            object-fit: cover; /* Crop image to fill the space while maintaining aspect ratio */
             border-radius: 0.5rem; /* Rounded image corners */
             margin-bottom: 0.75rem;
         }
