@@ -39,7 +39,7 @@
             text-align: center;
             transition: all 0.2s ease-in-out;
             cursor: pointer;
-            position: relative; /* For checkbox positioning */
+            position: relative; /* Keep relative for potential future absolute positioning if needed */
             min-height: 280px; /* Ensure consistent height for cards */
         }
         .image-card:hover {
@@ -58,19 +58,20 @@
             border-radius: 0.5rem; /* Rounded image corners */
             margin-bottom: 0.75rem;
         }
+        /* Removed absolute positioning for checkbox */
         .image-card input[type="checkbox"] {
-            position: absolute;
-            top: 0.75rem;
-            left: 0.75rem;
-            width: 1.5rem;
-            height: 1.5rem;
             cursor: pointer;
             accent-color: #3b82f6; /* Blue checkbox */
+            margin-right: 0.5rem; /* Space between checkbox and text */
+            flex-shrink: 0; /* Prevent checkbox from shrinking */
         }
         .image-card label {
             cursor: pointer;
-            display: block; /* Make label take full width */
-            padding-top: 0.5rem; /* Space for checkbox */
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack image and text vertically */
+            align-items: center; /* Center items horizontally */
+            width: 100%; /* Take full width of card */
+            padding-top: 0; /* No extra padding needed here */
         }
         .conditional-fields {
             display: none; /* Hidden by default */
@@ -100,21 +101,15 @@
             display: block;
         }
         /* Ensure responsive grid for images */
-        @media (min-width: 640px) { /* sm breakpoint */
+        .image-grid {
+            grid-template-columns: repeat(1, 1fr); /* Default to 1 column on very small screens */
+        }
+        @media (min-width: 640px) { /* sm breakpoint and up */
             .image-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, 1fr); /* Two columns */
             }
         }
-        @media (min-width: 768px) { /* md breakpoint */
-            .image-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        @media (min-width: 1024px) { /* lg breakpoint */
-            .image-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
+        /* Removed md and lg breakpoints to keep it at 2 columns */
     </style>
 </head>
 <body>
@@ -122,7 +117,7 @@
         <h2 class="text-3xl font-extrabold mb-4 text-gray-900">Select Your Items</h2>
         <p class="text-gray-600 mb-8">Choose the items you need. Additional fields will appear for selected items.</p>
 
-        <div id="imageGrid" class="image-grid grid grid-cols-1 gap-6">
+        <div id="imageGrid" class="image-grid grid gap-6">
             <!-- Image cards will be dynamically inserted here by JavaScript -->
             <p id="loadingMessage" class="text-gray-500">Loading images...</p>
         </div>
@@ -138,7 +133,6 @@
         // Global variables for Canvas environment (Firestore related, but not used in this example)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        // Corrected: Use __initial_auth_token on the right side
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         const imageGrid = document.getElementById('imageGrid');
@@ -162,10 +156,12 @@
                 card.setAttribute('data-id', item.id); // Custom attribute to easily identify the card
 
                 card.innerHTML = `
-                    <input type="checkbox" id="${item.id}" name="selectedItems" value="${item.id}">
-                    <label for="${item.id}">
+                    <label for="${item.id}" class="flex flex-col items-center w-full">
                         <img src="${item.src}" alt="${item.description}" class="mx-auto block">
-                        <p class="text-gray-700 font-medium mt-2">${item.description}</p>
+                        <div class="flex items-center justify-start w-full px-2 mt-2">
+                            <input type="checkbox" id="${item.id}" name="selectedItems" value="${item.id}">
+                            <p class="text-gray-700 font-medium">${item.description}</p>
+                        </div>
                     </label>
                     <div class="conditional-fields" id="fields-${item.id}">
                         <label for="boxes-${item.id}" class="mt-4">Estimated number of boxes:</label>
