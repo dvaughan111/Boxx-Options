@@ -32,7 +32,7 @@
             background-color: #000000; /* True black background for the container */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 100%; /* Allow to fill available width */
-            max-width: 800px; /* Adjusted: Max width for overall container to fit two larger columns well */
+            max-width: 1200px; /* Increased: Max width for overall container to fit two much larger columns */
             text-align: center;
             padding: 1.5rem; /* Padding for the container itself */
         }
@@ -109,7 +109,7 @@
         /* Ensure responsive grid for images */
         .image-grid {
             grid-template-columns: repeat(2, 1fr); /* Changed to strictly two columns */
-            gap: 1rem; /* Narrower gap between cards */
+            gap: 8px; /* Reduced gap to a few pixels */
             width: 100%; /* Ensure the grid itself takes full width */
         }
         /* No need for media queries for grid-template-columns if it's always 2 */
@@ -122,23 +122,16 @@
             <p id="loadingMessage" class="text-gray-500">Loading images...</p>
         </div>
 
-        <!-- This div is for displaying the data that would conceptually be sent to Jotform -->
-        <!-- This section is for demonstration in a standalone context -->
-        <div id="outputData" class="mt-8 p-4 bg-gray-800 border border-gray-700 text-left text-sm text-gray-200 hidden">
-            <h3 class="font-semibold mb-2">Selected Item Data:</h3>
-            <pre class="whitespace-pre-wrap font-mono text-xs"></pre>
-        </div>
     </div>
 
     <script>
         const imageGrid = document.getElementById('imageGrid');
         const loadingMessage = document.getElementById('loadingMessage');
-        const outputDataDiv = document.getElementById('outputData');
-        const outputDataPre = outputDataDiv.querySelector('pre');
+        // Removed references to outputDataDiv and outputDataPre
 
         let imagesData = [];
 
-        // Function to update the displayed output data
+        // Function to update the displayed output data (now just logs to console)
         function updateOutputData() {
             const selectedItemsData = [];
             const selectedCards = document.querySelectorAll('.image-card.selected');
@@ -156,13 +149,7 @@
                 });
             });
 
-            if (selectedItemsData.length > 0) {
-                outputDataDiv.classList.remove('hidden');
-                outputDataPre.textContent = JSON.stringify(selectedItemsData, null, 2);
-            } else {
-                outputDataDiv.classList.add('hidden');
-                outputDataPre.textContent = '';
-            }
+            // Removed logic to show/hide outputDataDiv and update its content
             console.log('Selected Item Data:', selectedItemsData);
         }
 
@@ -259,4 +246,3 @@
     </script>
 </body>
 </html>
-
