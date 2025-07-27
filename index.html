@@ -10,7 +10,7 @@
         /* Custom styles for the widget */
         body {
             font-family: 'Inter', sans-serif; /* Using Inter font for a modern look */
-            background-color: #f0f4f8; /* Light background */
+            background-color: #000000; /* True black background */
             display: flex;
             justify-content: center;
             align-items: flex-start; /* Align to start to prevent excessive vertical centering */
@@ -32,15 +32,16 @@
             background-color: #fdfdfd;
             border: 1px solid #e2e8f0; /* Light border */
             border-radius: 0.75rem; /* Rounded corners for cards */
-            padding: 1rem;
+            padding: 0; /* Removed padding here to allow image to stretch to edges */
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             transition: all 0.2s ease-in-out;
             cursor: pointer;
-            position: relative; /* Keep relative for potential future absolute positioning if needed */
+            position: relative;
             min-height: auto; /* Allow card height to adjust based on content */
+            overflow: hidden; /* Ensures rounded corners clip content */
         }
         .image-card:hover {
             border-color: #a7d9ff; /* Highlight on hover */
@@ -53,30 +54,31 @@
         }
         .image-card img {
             width: 100%; /* Make image fill the width of its container */
-            height: 250px; /* Set a fixed height for visual consistency */
+            height: 200px; /* Set a fixed height for squared look */
             object-fit: cover; /* Crop image to fill the space while maintaining aspect ratio */
-            border-radius: 0.5rem; /* Rounded image corners */
-            margin-bottom: 0.75rem;
+            border-top-left-radius: 0.75rem; /* Match card border radius top */
+            border-top-right-radius: 0.75rem; /* Match card border radius top */
+            margin-bottom: 0; /* No margin below image as description box follows */
         }
-        /* Removed absolute positioning for checkbox */
-        .image-card input[type="checkbox"] {
-            cursor: pointer;
-            accent-color: #3b82f6; /* Blue checkbox */
-            margin-right: 0.5rem; /* Space between checkbox and text */
-            flex-shrink: 0; /* Prevent checkbox from shrinking */
+        .image-description-box {
+            background-color: #f0f0f0; /* Light gray background for description */
+            width: 100%;
+            padding: 0.75rem 1rem; /* Padding inside the description box */
+            text-align: center;
+            border-bottom-left-radius: 0.75rem; /* Match card border radius bottom */
+            border-bottom-right-radius: 0.75rem; /* Match card border radius bottom */
+            box-sizing: border-box; /* Include padding in width */
         }
-        .image-card label {
-            cursor: pointer;
-            display: flex; /* Use flexbox for layout */
-            flex-direction: column; /* Stack image and text vertically */
-            align-items: center; /* Center items horizontally */
-            width: 100%; /* Take full width of card */
-            padding-top: 0; /* No extra padding needed here */
+        .image-description-box p {
+            color: #333; /* Darker text for readability on gray background */
+            font-weight: 500; /* Medium font weight */
         }
+        /* Removed checkbox specific styles as it's no longer present */
         .conditional-fields {
             display: none; /* Hidden by default */
             width: 100%;
-            margin-top: 1rem;
+            padding: 1rem; /* Padding inside conditional fields area */
+            box-sizing: border-box;
             text-align: left; /* Align text within conditional fields */
         }
         .conditional-fields input[type="number"],
@@ -103,21 +105,20 @@
         /* Ensure responsive grid for images */
         .image-grid {
             grid-template-columns: repeat(1, 1fr); /* Default to 1 column on very small screens */
+            gap: 1rem; /* Narrower gap between cards */
         }
         @media (min-width: 640px) { /* sm breakpoint and up */
             .image-grid {
                 grid-template-columns: repeat(2, 1fr); /* Two columns */
             }
         }
-        /* Removed md and lg breakpoints to keep it at 2 columns */
     </style>
 </head>
 <body>
     <div class="widget-container">
-        <h2 class="text-3xl font-extrabold mb-4 text-gray-900">Select Your Items</h2>
-        <p class="text-gray-600 mb-8">Choose the items you need. Additional fields will appear for selected items.</p>
-
-        <div id="imageGrid" class="image-grid grid gap-6">
+        <!-- Removed Header Section -->
+        
+        <div id="imageGrid" class="image-grid grid">
             <!-- Image cards will be dynamically inserted here by JavaScript -->
             <p id="loadingMessage" class="text-gray-500">Loading images...</p>
         </div>
@@ -145,6 +146,10 @@
         // Function to render the image cards
         function renderImageCards() {
             imageGrid.innerHTML = ''; // Clear existing content
+            if (loadingMessage) { // Ensure loading message is hidden if data is about to be rendered
+                loadingMessage.style.display = 'none';
+            }
+
             if (imagesData.length === 0) {
                 imageGrid.innerHTML = '<p class="text-gray-500">No images found. Please check the images.json file.</p>';
                 return;
@@ -156,13 +161,10 @@
                 card.setAttribute('data-id', item.id); // Custom attribute to easily identify the card
 
                 card.innerHTML = `
-                    <label for="${item.id}" class="flex flex-col items-center w-full">
-                        <img src="${item.src}" alt="${item.description}" class="mx-auto block">
-                        <div class="flex items-center justify-start w-full px-2 mt-2">
-                            <input type="checkbox" id="${item.id}" name="selectedItems" value="${item.id}">
-                            <p class="text-gray-700 font-medium">${item.description}</p>
-                        </div>
-                    </label>
+                    <img src="${item.src}" alt="${item.description}" class="block">
+                    <div class="image-description-box">
+                        <p>${item.description}</p>
+                    </div>
                     <div class="conditional-fields" id="fields-${item.id}">
                         <label for="boxes-${item.id}" class="mt-4">Estimated number of boxes:</label>
                         <input type="number" id="boxes-${item.id}" min="1" value="1" class="w-full">
@@ -172,23 +174,22 @@
                 `;
                 imageGrid.appendChild(card);
 
-                const checkbox = card.querySelector(`#${item.id}`);
                 const conditionalFields = card.querySelector(`#fields-${item.id}`);
                 const boxesInput = card.querySelector(`#boxes-${item.id}`);
                 const notesTextarea = card.querySelector(`#notes-${item.id}`);
 
-                // Add event listener for checkbox change
-                checkbox.addEventListener('change', () => {
-                    if (checkbox.checked) {
-                        conditionalFields.style.display = 'block'; // Show fields
-                        card.classList.add('selected'); // Add selected class for styling
-                        // Ensure fields are cleared when re-checked, in case user unchecked and re-checked
-                        boxesInput.value = 1;
-                        notesTextarea.value = '';
-                    } else {
-                        conditionalFields.style.display = 'none'; // Hide fields
-                        card.classList.remove('selected'); // Remove selected class
-                        // Clear data when unchecked
+                // Add event listener to the card itself to toggle selection and fields
+                card.addEventListener('click', (event) => {
+                    // Prevent click from propagating from inputs within the conditional fields
+                    if (event.target === boxesInput || event.target === notesTextarea) {
+                        return;
+                    }
+
+                    const isSelected = card.classList.toggle('selected'); // Toggle selected class
+                    conditionalFields.style.display = isSelected ? 'block' : 'none'; // Show/hide fields
+
+                    if (!isSelected) {
+                        // Clear data when unselected
                         boxesInput.value = 1; // Reset to default or empty
                         notesTextarea.value = '';
                     }
@@ -198,26 +199,17 @@
                 // Add event listeners for input changes within conditional fields
                 boxesInput.addEventListener('input', sendDataToJotform);
                 notesTextarea.addEventListener('input', sendDataToJotform);
-
-                // Add event listener to the card itself to toggle checkbox
-                card.addEventListener('click', (event) => {
-                    // Only toggle if the click wasn't directly on the checkbox or its associated inputs
-                    if (event.target !== checkbox && event.target !== boxesInput && event.target !== notesTextarea) {
-                        checkbox.checked = !checkbox.checked;
-                        checkbox.dispatchEvent(new Event('change')); // Manually trigger change event
-                    }
-                });
             });
         }
 
         // Function to collect and send data to Jotform (conceptual)
         function sendDataToJotform() {
             const selectedItemsData = [];
-            const checkboxes = document.querySelectorAll('input[name="selectedItems"]:checked');
+            // Select cards that have the 'selected' class
+            const selectedCards = document.querySelectorAll('.image-card.selected');
 
-            checkboxes.forEach(checkbox => {
-                const itemId = checkbox.value;
-                const card = document.querySelector(`.image-card[data-id="${itemId}"]`);
+            selectedCards.forEach(card => {
+                const itemId = card.getAttribute('data-id');
                 const boxesInput = card.querySelector(`#boxes-${itemId}`);
                 const notesTextarea = card.querySelector(`#notes-${itemId}`);
 
