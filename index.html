@@ -30,7 +30,7 @@
         }
         .widget-container {
             background-color: #000000; /* True black background for the container */
-            border-radius: 1rem; /* Rounded corners */
+            /* border-radius: 1rem; Removed rounded corners */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 100%; /* Allow to fill available width */
             text-align: center;
@@ -39,17 +39,18 @@
         .image-card {
             background-color: #1a202c; /* Dark gray for image cards (Tailwind gray-900) */
             border: 1px solid #2d3748; /* Slightly lighter dark gray border */
-            border-radius: 0.75rem; /* Rounded corners for cards */
+            /* border-radius: 0.75rem; Removed rounded corners */
             padding: 0; /* No padding here; image fills to edges */
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Center items horizontally */
+            justify-content: flex-start; /* Align content to the top within the card */
             text-align: center;
             transition: all 0.2s ease-in-out;
             cursor: pointer;
             position: relative;
             min-height: auto; /* Allow card height to adjust based on content */
-            overflow: hidden; /* Ensures rounded corners clip content */
+            overflow: hidden; /* Ensures content is clipped if it exceeds bounds */
         }
         .image-card:hover {
             border-color: #3b82f6; /* Blue highlight on hover */
@@ -62,10 +63,11 @@
         }
         .image-card img {
             width: 100%; /* Make image fill the width of its container */
+            max-width: 180px; /* Set a maximum width for the image (slightly smaller) */
             aspect-ratio: 1 / 1; /* Force a 1:1 square aspect ratio */
             object-fit: cover; /* Crop image to fill the space while maintaining aspect ratio */
-            border-top-left-radius: 0.75rem; /* Match card border radius top */
-            border-top-right-radius: 0.75rem; /* Match card border radius top */
+            /* border-top-left-radius: 0.75rem; Removed rounded corners */
+            /* border-top-right-radius: 0.75rem; Removed rounded corners */
             margin-bottom: 0; /* No margin below image as description box follows */
         }
         .image-description-box {
@@ -73,8 +75,8 @@
             width: 100%;
             padding: 0.75rem 1rem; /* Padding inside the description box */
             text-align: center;
-            border-bottom-left-radius: 0.75rem; /* Match card border radius bottom */
-            border-bottom-right-radius: 0.75rem; /* Match card border radius bottom */
+            /* border-bottom-left-radius: 0.75rem; Removed rounded corners */
+            /* border-bottom-right-radius: 0.75rem; Removed rounded corners */
             box-sizing: border-box; /* Include padding in width */
         }
         .image-description-box p {
@@ -101,7 +103,7 @@
             border: 1px solid #4a5568; /* Darker border for inputs */
             background-color: #2d3748; /* Dark background for inputs */
             color: #e2e8f0; /* Light text color for inputs */
-            border-radius: 0.5rem;
+            /* border-radius: 0.5rem; Removed rounded corners */
             margin-top: 0.5rem;
             font-size: 0.9rem;
             outline: none;
