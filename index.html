@@ -32,7 +32,7 @@
             background-color: #000000; /* True black background for the container */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 100%; /* Allow to fill available width */
-            max-width: 700px; /* Adjusted: Max width for overall container to fit two columns well */
+            max-width: 800px; /* Adjusted: Max width for overall container to fit two larger columns well */
             text-align: center;
             padding: 1.5rem; /* Padding for the container itself */
         }
@@ -52,13 +52,13 @@
             overflow: hidden; /* Ensures content is clipped if it exceeds bounds */
         }
         .image-card:hover {
-            border-color: #3b82f6; /* Blue highlight on hover */
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3); /* Blue shadow on hover */
+            border-color: #902124; /* Highlight on hover */
+            box-shadow: 0 6px 16px rgba(144, 33, 36, 0.3); /* Shadow on hover */
             transform: translateY(-2px); /* Slight lift */
         }
         .image-card.selected {
-            border-color: #3b82f6; /* Blue border when selected */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Stronger blue ring when selected */
+            border-color: #902124; /* Changed to desired highlight color */
+            box-shadow: 0 0 0 3px rgba(144, 33, 36, 0.5); /* Stronger ring when selected */
         }
         .image-card img {
             width: 100%; /* Make image fill the width of its container */
@@ -104,7 +104,7 @@
         }
         .conditional-fields input[type="number"]:focus,
         .conditional-fields textarea:focus {
-            border-color: #3b82f6;
+            border-color: #902124; /* Changed to desired highlight color */
         }
         /* Ensure responsive grid for images */
         .image-grid {
@@ -259,3 +259,4 @@
     </script>
 </body>
 </html>
+
