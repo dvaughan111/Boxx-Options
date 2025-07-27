@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jotform Image Selector Widget</title>
+    <title>Image Selector Widget</title>
     <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -26,20 +26,19 @@
             align-items: flex-start; /* Align to start to prevent excessive vertical centering */
             min-height: 100vh;
             margin: 0;
-            /* No padding on body; widget-container handles it */
+            padding: 0; /* No padding on body; widget-container handles it */
         }
         .widget-container {
             background-color: #000000; /* True black background for the container */
-            /* border-radius: 1rem; Removed rounded corners */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 100%; /* Allow to fill available width */
+            max-width: 900px; /* Max width for overall container on large screens */
             text-align: center;
-            /* Padding handled by Tailwind classes in HTML */
+            padding: 1.5rem; /* Padding for the container itself */
         }
         .image-card {
             background-color: #1a202c; /* Dark gray for image cards (Tailwind gray-900) */
             border: 1px solid #2d3748; /* Slightly lighter dark gray border */
-            /* border-radius: 0.75rem; Removed rounded corners */
             padding: 0; /* No padding here; image fills to edges */
             display: flex;
             flex-direction: column;
@@ -51,7 +50,6 @@
             position: relative;
             min-height: auto; /* Allow card height to adjust based on content */
             overflow: hidden; /* Ensures content is clipped if it exceeds bounds */
-            max-width: 200px; /* Reduced: Limit max width of individual cards for better fit */
         }
         .image-card:hover {
             border-color: #3b82f6; /* Blue highlight on hover */
@@ -64,20 +62,15 @@
         }
         .image-card img {
             width: 100%; /* Make image fill the width of its container */
-            /* max-width: 120px; Removed as width:100% and aspect-ratio handle sizing */
             aspect-ratio: 1 / 1; /* Force a 1:1 square aspect ratio */
             object-fit: cover; /* Crop image to fill the space while maintaining aspect ratio */
-            /* border-top-left-radius: 0.75rem; Removed rounded corners */
-            /* border-top-right-radius: 0.75rem; Removed rounded corners */
             margin-bottom: 0; /* No margin below image as description box follows */
         }
         .image-description-box {
             background-color: #f0f0f0; /* Light gray background for description */
             width: 100%;
-            padding: 0.5rem 0.6rem; /* Padding inside the description box */
+            padding: 0.75rem 1rem; /* Standard padding for description box */
             text-align: center;
-            /* border-bottom-left-radius: 0.75rem; Removed rounded corners */
-            /* border-bottom-right-radius: 0.75rem; Removed rounded corners */
             box-sizing: border-box; /* Include padding in width */
         }
         .image-description-box p {
@@ -104,7 +97,6 @@
             border: 1px solid #4a5568; /* Darker border for inputs */
             background-color: #2d3748; /* Dark background for inputs */
             color: #e2e8f0; /* Light text color for inputs */
-            /* border-radius: 0.5rem; Removed rounded corners */
             margin-top: 0.5rem;
             font-size: 0.9rem;
             outline: none;
@@ -116,63 +108,67 @@
         }
         /* Ensure responsive grid for images */
         .image-grid {
-            grid-template-columns: repeat(1, 1fr); /* Default to 1 column on very small screens */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Dynamic columns, min 250px */
             gap: 1rem; /* Narrower gap between cards */
-            width: 100%; /* Ensure the grid itself takes full full width */
-        }
-        @media (min-width: 640px) { /* sm breakpoint and up */
-            .image-grid {
-                grid-template-columns: repeat(2, 1fr); /* Two columns */
-            }
+            width: 100%; /* Ensure the grid itself takes full width */
         }
     </style>
 </head>
 <body>
-    <div class="widget-container p-4 mx-auto bg-black max-w-full">
-        <!-- Removed Header Section -->
-        
+    <div class="widget-container">
         <div id="imageGrid" class="image-grid grid">
             <!-- Image cards will be dynamically inserted here by JavaScript -->
             <p id="loadingMessage" class="text-gray-500">Loading images...</p>
         </div>
 
         <!-- This div is for displaying the data that would conceptually be sent to Jotform -->
-        <div id="jotformOutput" class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg text-left text-sm text-blue-800 hidden">
-            <h3 class="font-semibold mb-2">Data to be sent to Jotform:</h3>
+        <!-- This section is for demonstration in a standalone context -->
+        <div id="outputData" class="mt-8 p-4 bg-gray-800 border border-gray-700 text-left text-sm text-gray-200 hidden">
+            <h3 class="font-semibold mb-2">Selected Item Data:</h3>
             <pre class="whitespace-pre-wrap font-mono text-xs"></pre>
         </div>
     </div>
 
     <script>
-        // Global variables for Canvas environment (Firestore related, but not used in this example)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? initialAuthToken : null;
-
         const imageGrid = document.getElementById('imageGrid');
-        const loadingMessage = document.getElementById('loadingMessage'); // Get reference to loading message
-        const jotformOutputDiv = document.getElementById('jotformOutput');
-        const jotformOutputPre = jotformOutputDiv.querySelector('pre');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const outputDataDiv = document.getElementById('outputData');
+        const outputDataPre = outputDataDiv.querySelector('pre');
 
-        let imagesData = []; // This will now be populated from the JSON file
+        let imagesData = [];
 
-        // Function to send the current height of the widget to Jotform
-        function setJotformIframeHeight() {
-            // Check if Jotform's API for setting height is available
-            if (typeof JF !== 'undefined' && JF.setHeight) {
-                // Get the total scrollable height of the document body
-                const height = document.documentElement.scrollHeight;
-                JF.setHeight(height);
-                console.log('Jotform iframe height set to:', height, 'px');
+        // Function to update the displayed output data
+        function updateOutputData() {
+            const selectedItemsData = [];
+            const selectedCards = document.querySelectorAll('.image-card.selected');
+
+            selectedCards.forEach(card => {
+                const itemId = card.getAttribute('data-id');
+                const boxesInput = card.querySelector(`#boxes-${itemId}`);
+                const notesTextarea = card.querySelector(`#notes-${itemId}`);
+
+                selectedItemsData.push({
+                    id: itemId,
+                    description: imagesData.find(item => item.id === itemId).description,
+                    boxes: parseInt(boxesInput.value, 10),
+                    notes: notesTextarea.value.trim()
+                });
+            });
+
+            if (selectedItemsData.length > 0) {
+                outputDataDiv.classList.remove('hidden');
+                outputDataPre.textContent = JSON.stringify(selectedItemsData, null, 2);
             } else {
-                console.warn('JF.setHeight is not available. Widget may not auto-resize in Jotform.');
+                outputDataDiv.classList.add('hidden');
+                outputDataPre.textContent = '';
             }
+            console.log('Selected Item Data:', selectedItemsData);
         }
 
         // Function to render the image cards
         function renderImageCards() {
-            imageGrid.innerHTML = ''; // Clear existing content
-            if (loadingMessage) { // Ensure loading message is hidden if data is about to be rendered
+            imageGrid.innerHTML = '';
+            if (loadingMessage) {
                 loadingMessage.style.display = 'none';
             }
 
@@ -184,7 +180,7 @@
             imagesData.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'image-card';
-                card.setAttribute('data-id', item.id); // Custom attribute to easily identify the card
+                card.setAttribute('data-id', item.id);
 
                 card.innerHTML = `
                     <img src="${item.src}" alt="${item.description}" class="block">
@@ -211,94 +207,44 @@
                         return;
                     }
 
-                    const isSelected = card.classList.toggle('selected'); // Toggle selected class
-                    conditionalFields.style.display = isSelected ? 'block' : 'none'; // Show/hide fields
+                    const isSelected = card.classList.toggle('selected');
+                    conditionalFields.style.display = isSelected ? 'block' : 'none';
 
                     if (!isSelected) {
-                        // Clear data when unselected
-                        boxesInput.value = 1; // Reset to default or empty
+                        boxesInput.value = 1;
                         notesTextarea.value = '';
                     }
-                    sendDataToJotform(); // Send updated data
-                    setJotformIframeHeight(); // Adjust iframe height after content changes
+                    updateOutputData(); // Update output data
                 });
 
                 // Add event listeners for input changes within conditional fields
-                boxesInput.addEventListener('input', sendDataToJotform);
-                notesTextarea.addEventListener('input', sendDataToJotform);
+                boxesInput.addEventListener('input', updateOutputData);
+                notesTextarea.addEventListener('input', updateOutputData);
             });
-            setJotformIframeHeight(); // Adjust iframe height after initial rendering
-        }
-
-        // Function to collect and send data to Jotform (conceptual)
-        function sendDataToJotform() {
-            const selectedItemsData = [];
-            // Select cards that have the 'selected' class
-            const selectedCards = document.querySelectorAll('.image-card.selected');
-
-            selectedCards.forEach(card => {
-                const itemId = card.getAttribute('data-id');
-                const boxesInput = card.querySelector(`#boxes-${itemId}`);
-                const notesTextarea = card.querySelector(`#notes-${itemId}`);
-
-                selectedItemsData.push({
-                    id: itemId,
-                    description: imagesData.find(item => item.id === itemId).description,
-                    boxes: parseInt(boxesInput.value, 10),
-                    notes: notesTextarea.value.trim()
-                });
-            });
-
-            // In a real Jotform widget, you would use window.parent.postMessage
-            // to send this 'selectedItemsData' array back to the parent Jotform frame.
-            // The exact message format would depend on Jotform's widget API.
-            // Example:
-            // if (window.parent) {
-            //     window.parent.postMessage({
-            //         type: 'JotForm_Widget_Data',
-            //         widgetId: 'imageSelectorWidget', // A unique ID for your widget instance
-            //         value: selectedItemsData
-            //     }, '*'); // '*' is for any origin, but specify Jotform's origin for security
-            // }
-
-            // For demonstration, display the data in a pre tag
-            if (selectedItemsData.length > 0) {
-                jotformOutputDiv.classList.remove('hidden');
-                jotformOutputPre.textContent = JSON.stringify(selectedItemsData, null, 2);
-            } else {
-                jotformOutputDiv.classList.add('hidden');
-                jotformOutputPre.textContent = '';
-            }
-
-            console.log('Data to send to Jotform:', selectedItemsData);
-            // setJotformIframeHeight(); // Adjust iframe height after data changes (optional, but good for dynamic content)
+            updateOutputData(); // Initial update of output data
         }
 
         // Function to fetch images data from a JSON file
         async function fetchImagesData() {
             try {
-                // Display loading message
                 if (loadingMessage) {
                     loadingMessage.style.display = 'block';
                 }
                 
                 // Construct an absolute URL for images.json using the current window's location
-                // This helps resolve the path correctly in various environments, including blob URLs.
                 const jsonUrl = new URL('images.json', window.location.href).toString();
-                console.log('Attempting to fetch JSON from:', jsonUrl); // Debugging line
+                console.log('Attempting to fetch JSON from:', jsonUrl);
 
-                const response = await fetch(jsonUrl); // Path to your JSON file
+                const response = await fetch(jsonUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 imagesData = await response.json();
-                renderImageCards(); // Render cards after data is fetched
-                sendDataToJotform(); // Send initial data (likely empty)
+                renderImageCards();
             } catch (error) {
                 console.error('Error fetching image data:', error);
-                imageGrid.innerHTML = '<p class="text-red-500">Failed to load images. Please ensure "images.json" exists and is valid at the same level as your HTML file. If testing in a local preview, this might be a browser security restriction.</p>';
+                imageGrid.innerHTML = '<p class="text-red-500">Failed to load images. Please ensure "images.json" exists and is valid at the same level as your HTML file.</p>';
             } finally {
-                // Hide loading message once done, regardless of success or failure
                 if (loadingMessage) {
                     loadingMessage.style.display = 'none';
                 }
@@ -307,7 +253,7 @@
 
         // Initial rendering of cards when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            fetchImagesData(); // Fetch data and then render
+            fetchImagesData();
         });
     </script>
 </body>
