@@ -12,7 +12,7 @@
             font-family: 'Inter', sans-serif; /* Using Inter font for a modern look */
             background-color: #000000; /* True black background */
             display: flex;
-            justify-content: center;
+            justify-content: center; /* Center content horizontally */
             align-items: flex-start; /* Align to start to prevent excessive vertical centering */
             min-height: 100vh;
             margin: 0;
@@ -24,8 +24,8 @@
             border-radius: 1rem; /* Rounded corners */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             padding: 2rem;
-            width: 100%;
-            max-width: 1000px; /* Max width for better readability on large screens */
+            width: 100%; /* Allow to fill available width */
+            /* Removed max-width to allow it to stretch to iframe width */
             text-align: center;
         }
         .image-card {
