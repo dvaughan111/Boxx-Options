@@ -32,7 +32,7 @@
             background-color: #000000; /* True black background for the container */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 100%; /* Allow to fill available width */
-            max-width: 900px; /* Max width for overall container on large screens */
+            max-width: 700px; /* Adjusted: Max width for overall container to fit two columns well */
             text-align: center;
             padding: 1.5rem; /* Padding for the container itself */
         }
@@ -94,9 +94,9 @@
         .conditional-fields textarea {
             width: 100%;
             padding: 0.6rem 0.8rem;
-            border: 1px solid #4a5568; /* Darker border for inputs */
-            background-color: #2d3748; /* Dark background for inputs */
-            color: #e2e8f0; /* Light text color for inputs */
+            border: 1px solid #cbd5e0; /* Lighter border for inputs */
+            background-color: #ffffff; /* Changed to white background */
+            color: #333; /* Changed to dark text color */
             margin-top: 0.5rem;
             font-size: 0.9rem;
             outline: none;
@@ -108,10 +108,11 @@
         }
         /* Ensure responsive grid for images */
         .image-grid {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Dynamic columns, min 250px */
+            grid-template-columns: repeat(2, 1fr); /* Changed to strictly two columns */
             gap: 1rem; /* Narrower gap between cards */
             width: 100%; /* Ensure the grid itself takes full width */
         }
+        /* No need for media queries for grid-template-columns if it's always 2 */
     </style>
 </head>
 <body>
@@ -185,7 +186,7 @@
                 card.innerHTML = `
                     <img src="${item.src}" alt="${item.description}" class="block">
                     <div class="image-description-box">
-                        <p>${item.description}</p>
+                        <p class="text-sm">${item.description} <br> <span class="font-bold">${item.price || ''}</span></p>
                     </div>
                     <div class="conditional-fields" id="fields-${item.id}">
                         <label for="boxes-${item.id}" class="mt-4">Estimated number of boxes:</label>
