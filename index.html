@@ -8,6 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for the widget */
+        html, body { /* Apply overflow-x-hidden to both html and body */
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Inter', sans-serif; /* Using Inter font for a modern look */
             background-color: #000000; /* True black background */
@@ -16,16 +19,15 @@
             align-items: flex-start; /* Align to start to prevent excessive vertical centering */
             min-height: 100vh;
             margin: 0;
-            padding: 1.5rem; /* Add some padding for smaller screens */
+            /* Removed padding from body CSS */
             box-sizing: border-box; /* Include padding in element's total width and height */
         }
         .widget-container {
             background-color: #ffffff;
             border-radius: 1rem; /* Rounded corners */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            padding: 2rem;
+            /* Removed padding from widget-container CSS - now handled by Tailwind classes in HTML */
             width: 100%; /* Allow to fill available width */
-            /* Removed max-width to allow it to stretch to iframe width */
             text-align: center;
         }
         .image-card {
@@ -115,7 +117,7 @@
     </style>
 </head>
 <body>
-    <div class="widget-container">
+    <div class="widget-container p-4 mx-auto">
         <!-- Removed Header Section -->
         
         <div id="imageGrid" class="image-grid grid">
