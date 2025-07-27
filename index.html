@@ -19,20 +19,18 @@
             align-items: flex-start; /* Align to start to prevent excessive vertical centering */
             min-height: 100vh;
             margin: 0;
-            /* Removed padding from body CSS */
             box-sizing: border-box; /* Include padding in element's total width and height */
         }
         .widget-container {
-            background-color: #ffffff;
+            background-color: #000000; /* True black background for the container */
             border-radius: 1rem; /* Rounded corners */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            /* Removed padding from widget-container CSS - now handled by Tailwind classes in HTML */
             width: 100%; /* Allow to fill available width */
             text-align: center;
         }
         .image-card {
-            background-color: #fdfdfd;
-            border: 1px solid #e2e8f0; /* Light border */
+            background-color: #1a202c; /* Dark gray for image cards (Tailwind gray-900) */
+            border: 1px solid #2d3748; /* Slightly lighter dark gray border */
             border-radius: 0.75rem; /* Rounded corners for cards */
             padding: 0; /* Removed padding here to allow image to stretch to edges */
             display: flex;
@@ -46,17 +44,17 @@
             overflow: hidden; /* Ensures rounded corners clip content */
         }
         .image-card:hover {
-            border-color: #a7d9ff; /* Highlight on hover */
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Deeper shadow on hover */
+            border-color: #3b82f6; /* Blue highlight on hover */
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3); /* Blue shadow on hover */
             transform: translateY(-2px); /* Slight lift */
         }
         .image-card.selected {
             border-color: #3b82f6; /* Blue border when selected */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Blue ring when selected */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Stronger blue ring when selected */
         }
         .image-card img {
             width: 100%; /* Make image fill the width of its container */
-            height: 200px; /* Set a fixed height for squared look */
+            aspect-ratio: 1 / 1; /* Force a 1:1 square aspect ratio */
             object-fit: cover; /* Crop image to fill the space while maintaining aspect ratio */
             border-top-left-radius: 0.75rem; /* Match card border radius top */
             border-top-right-radius: 0.75rem; /* Match card border radius top */
@@ -83,11 +81,19 @@
             box-sizing: border-box;
             text-align: left; /* Align text within conditional fields */
         }
+        .conditional-fields label {
+            font-size: 0.9rem;
+            color: #a0aec0; /* Lighter gray for labels on dark background (Tailwind gray-400) */
+            margin-top: 0.75rem;
+            display: block;
+        }
         .conditional-fields input[type="number"],
         .conditional-fields textarea {
             width: 100%;
             padding: 0.6rem 0.8rem;
-            border: 1px solid #cbd5e0;
+            border: 1px solid #4a5568; /* Darker border for inputs */
+            background-color: #2d3748; /* Dark background for inputs */
+            color: #e2e8f0; /* Light text color for inputs */
             border-radius: 0.5rem;
             margin-top: 0.5rem;
             font-size: 0.9rem;
@@ -97,12 +103,6 @@
         .conditional-fields input[type="number"]:focus,
         .conditional-fields textarea:focus {
             border-color: #3b82f6;
-        }
-        .conditional-fields label {
-            font-size: 0.9rem;
-            color: #4a5568;
-            margin-top: 0.75rem;
-            display: block;
         }
         /* Ensure responsive grid for images */
         .image-grid {
@@ -117,7 +117,7 @@
     </style>
 </head>
 <body>
-    <div class="widget-container p-2 mx-auto">
+    <div class="widget-container p-4 mx-auto bg-black">
         <!-- Removed Header Section -->
         
         <div id="imageGrid" class="image-grid grid">
