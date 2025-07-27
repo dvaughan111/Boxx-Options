@@ -51,6 +51,7 @@
             position: relative;
             min-height: auto; /* Allow card height to adjust based on content */
             overflow: hidden; /* Ensures content is clipped if it exceeds bounds */
+            max-width: 300px; /* Added: Limit max width of individual cards */
         }
         .image-card:hover {
             border-color: #3b82f6; /* Blue highlight on hover */
@@ -63,7 +64,7 @@
         }
         .image-card img {
             width: 100%; /* Make image fill the width of its container */
-            max-width: 140px; /* Set a maximum width for the image (reduced by 20% from 180px) */
+            max-width: 120px; /* Set a maximum width for the image (even smaller) */
             aspect-ratio: 1 / 1; /* Force a 1:1 square aspect ratio */
             object-fit: cover; /* Crop image to fill the space while maintaining aspect ratio */
             /* border-top-left-radius: 0.75rem; Removed rounded corners */
@@ -73,7 +74,7 @@
         .image-description-box {
             background-color: #f0f0f0; /* Light gray background for description */
             width: 100%;
-            padding: 0.6rem 0.8rem; /* Padding inside the description box (reduced by 20%) */
+            padding: 0.5rem 0.6rem; /* Padding inside the description box (reduced by 20%) */
             text-align: center;
             /* border-bottom-left-radius: 0.75rem; Removed rounded corners */
             /* border-bottom-right-radius: 0.75rem; Removed rounded corners */
