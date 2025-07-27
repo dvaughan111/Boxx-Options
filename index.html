@@ -13,8 +13,9 @@
         }
 
         /* Custom styles for the widget */
-        html, body { /* Apply overflow-x-hidden to both html and body */
-            overflow-x: hidden;
+        html, body {
+            /* Aggressive overflow hidden to prevent horizontal scrollbars */
+            overflow-x: hidden; 
             width: 100%; /* Ensure html and body take full width */
         }
         body {
@@ -25,6 +26,7 @@
             align-items: flex-start; /* Align to start to prevent excessive vertical centering */
             min-height: 100vh;
             margin: 0;
+            /* No padding on body; widget-container handles it */
         }
         .widget-container {
             background-color: #000000; /* True black background for the container */
@@ -32,12 +34,13 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 100%; /* Allow to fill available width */
             text-align: center;
+            /* Padding handled by Tailwind classes in HTML */
         }
         .image-card {
             background-color: #1a202c; /* Dark gray for image cards (Tailwind gray-900) */
             border: 1px solid #2d3748; /* Slightly lighter dark gray border */
             border-radius: 0.75rem; /* Rounded corners for cards */
-            padding: 0; /* Removed padding here to allow image to stretch to edges */
+            padding: 0; /* No padding here; image fills to edges */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -78,7 +81,6 @@
             color: #333; /* Darker text for readability on gray background */
             font-weight: 500; /* Medium font weight */
         }
-        /* Removed checkbox specific styles as it's no longer present */
         .conditional-fields {
             display: none; /* Hidden by default */
             width: 100%;
@@ -123,7 +125,7 @@
     </style>
 </head>
 <body>
-    <div class="widget-container p-2 mx-auto bg-black">
+    <div class="widget-container p-4 mx-auto bg-black max-w-full">
         <!-- Removed Header Section -->
         
         <div id="imageGrid" class="image-grid grid">
