@@ -143,6 +143,19 @@
 
         let imagesData = []; // This will now be populated from the JSON file
 
+        // Function to send the current height of the widget to Jotform
+        function setJotformIframeHeight() {
+            // Check if Jotform's API for setting height is available
+            if (typeof JF !== 'undefined' && JF.setHeight) {
+                // Get the total scrollable height of the document body
+                const height = document.documentElement.scrollHeight;
+                JF.setHeight(height);
+                console.log('Jotform iframe height set to:', height, 'px');
+            } else {
+                console.warn('JF.setHeight is not available. Widget may not auto-resize in Jotform.');
+            }
+        }
+
         // Function to render the image cards
         function renderImageCards() {
             imageGrid.innerHTML = ''; // Clear existing content
@@ -194,12 +207,14 @@
                         notesTextarea.value = '';
                     }
                     sendDataToJotform(); // Send updated data
+                    setJotformIframeHeight(); // Adjust iframe height after content changes
                 });
 
                 // Add event listeners for input changes within conditional fields
                 boxesInput.addEventListener('input', sendDataToJotform);
                 notesTextarea.addEventListener('input', sendDataToJotform);
             });
+            setJotformIframeHeight(); // Adjust iframe height after initial rendering
         }
 
         // Function to collect and send data to Jotform (conceptual)
@@ -243,6 +258,7 @@
             }
 
             console.log('Data to send to Jotform:', selectedItemsData);
+            // setJotformIframeHeight(); // Adjust iframe height after data changes (optional, but good for dynamic content)
         }
 
         // Function to fetch images data from a JSON file
