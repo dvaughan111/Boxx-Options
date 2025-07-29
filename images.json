@@ -29,7 +29,7 @@
         "src": "https://raw.githubusercontent.com/dvaughan111/Boxx-Options/main/images/The%20golfer.jpg",
         "description": "The Golfer Box"
     },
-   ** {
+    {
         "id": "item7",
         "src": "https://raw.githubusercontent.com/dvaughan111/Boxx-Options/main/images/Well%20Read.jpg",
         "description": "Well Read Box"
@@ -44,7 +44,7 @@
         "src": "https://raw.githubusercontent.com/dvaughan111/Boxx-Options/main/images/The%2Very%2Merry%2Ginger%2Snap%2(NA).webp",
         "description": "The Very Merry Ginger Snap (NA)"
     },
-   **   {
+    {
         "id": "item10",
         "src": "https://raw.githubusercontent.com/dvaughan111/Boxx-Options/main/images/The%2Waffle%2Bar.webp",
         "description": "The Waffle Bar"
